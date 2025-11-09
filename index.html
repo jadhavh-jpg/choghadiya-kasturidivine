@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Numerology with Hari — चौघड़िया एवं अंकशास्त्र</title>
-  <meta name="description" content="Numerology with Hari — चौघड़िया (Choghadiya) widget और Quick Numerology tool. Hari H Jadhav" />
+  <title>KASTURI DIVINE — चौघड़िया एवं अंकशास्त्र</title>
+  <meta name="description" content="KASTURI DIVINE — चौघड़िया (Choghadiya) widget और Quick Numerology tool. KASTURI DIVINEv" />
   <style>
     :root{
       --accent:#d46a2a;
@@ -55,16 +55,16 @@
 <body>
   <div class="wrap">
     <header>
-      <div class="logo">HARI</div>
+      <div class="logo">KD</div>
       <div>
-        <h1>Numerology with Hari</h1>
-        <p class="lead">चौघड़िया (Choghadiya) + Quick Numerology — Hari H Jadhav</p>
+        <h1>KASTURIDIVINE</h1>
+        <p class="lead">चौघड़िया (Choghadiya) + Quick Numerology — KSTURIDIVINEv</p>
       </div>
     </header>
 
     <main>
       <section class="card" id="hw-widget" aria-live="polite">
-        <h3>चौघड़िया एवं अंकशास्त्र <span style="font-size:12px;color:var(--muted)">— Powered by Hari</span></h3>
+        <h3>चौघड़िया एवं अंकशास्त्र <span style="font-size:12px;color:var(--muted)">— Powered by KD</span></h3>
 
         <div class="hw-row">
           <input id="hw-city" class="hw-input" placeholder="शहर लिखें (उदा. Mumbai, India)" value="Mumbai, India" aria-label="City" />
@@ -108,7 +108,7 @@
       </section>
 
       <footer>
-        <div class="small">© <strong>Hari H Jadhav</strong> — Numerology with Hari</div>
+        <div class="small">© <strong>Hari H Jadhav</strong> — KSTURI DIVINE</div>
       </footer>
     </main>
   </div>
@@ -168,13 +168,35 @@
     }
 
     // Sunrise-Sunset API
-    async function getSunTimes(lat, lon, dateStr){
-      const url = `https://api.sunrise-sunset.org/json?lat=${lat}&lng=${lon}&date=${dateStr}&formatted=0`;
-      const r = await fetch(url);
-      const j = await r.json();
-      if (j.status !== "OK") throw new Error('सूर्योदय-सूर्यास्त डेटा प्राप्त नहीं हुआ');
-      return {sunrise: new Date(j.results.sunrise), sunset: new Date(j.results.sunset)};
-    }
+    // ✅ Sunrise–Sunset API (with local timezone & error handling)
+async function getSunTimes(lat, lon, dateStr) {
+  try {
+    const url = `https://api.sunrise-sunset.org/json?lat=${lat}&lng=${lon}&date=${dateStr}&formatted=0`;
+    const response = await fetch(url);
+    if (!response.ok) throw new Error(`HTTP Error ${response.status}`);
+
+    const data = await response.json();
+    if (data.status !== "OK") throw new Error("सूर्योदय-सूर्यास्त डेटा प्राप्त नहीं हुआ");
+
+    // API UTC time return karta hai — browser ke local timezone me convert kar rahe hain
+    const sunriseUTC = new Date(data.results.sunrise);
+    const sunsetUTC = new Date(data.results.sunset);
+
+    const sunriseLocal = new Date(sunriseUTC.toLocaleString("en-US", { timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone }));
+    const sunsetLocal = new Date(sunsetUTC.toLocaleString("en-US", { timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone }));
+
+    return {
+      sunrise: sunriseLocal,
+      sunset: sunsetLocal,
+      raw: data.results
+    };
+
+  } catch (err) {
+    console.error("SunTimes error:", err.message);
+    return { error: err.message };
+  }
+}
+
 
     function toLocalString(d){
       return d.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
@@ -364,12 +386,12 @@
         alert('कृपया कम से कम एक जानकारी दर्ज करें (नाम/फोन/संदेश)।');
         return;
       }
-      let text = `नमस्ते Hari,\nमैं Numerology with Hari साइट से संपर्क कर रहा/रही हूँ.\n`;
+      let text = `नमस्ते KD,\nमैं KASTURI DIVINE साइट से संपर्क कर रहा/रही हूँ.\n`;
       if(name) text += `नाम: ${name}\n`;
       if(phone) text += `फोन: ${phone}\n`;
       if(msg) text += `संदेश: ${msg}\n`;
       text += `\nSite: ${location.hostname}`;
-      const waURL = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`;
+      const waURL = `https://wa.me/${919354370946}?text=${encodeURIComponent(text)}`;
       window.open(waURL, '_blank');
       modal.style.display = 'none';
       modal.setAttribute('aria-hidden', 'true');
